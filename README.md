@@ -1,2 +1,2 @@
 # Lydia
-4 wheeled arduino robot called Lydia
+4 wheeled Arduino robot called Lydia
