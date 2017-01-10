@@ -1,4 +1,4 @@
-/* YourDuino.com Example Software Sketch
+/* 
   IR Remote Kit Test
   Uses YourDuino.com IR Infrared Remote Control Kit 2
   http://arduino-direct.com/sunshop/index.php?l=product_detail&p=153
@@ -78,17 +78,15 @@ void loop() {  /*----( LOOP: RUNS CONSTANTLY )----*/
       enableMotors();
       turnLeft(200);
       disableMotors();
-      //      Serial.println("GOING TURNING LEFT");
+      //      Serial.println("TURNING LEFT");
     } else if (dir == "right") {
       enableMotors();
       turnRight(200);
       disableMotors();
       //      Serial.println("TURNING RIGHT");
     } else if (dir=="auto"){
+      irrecv.resume();
       autopilot();
-      IRrecv irrecv(receiver);           // create instance of 'irrecv'
-      decode_results results;            // create instance of 'decode_results'
-      irrecv.enableIRIn(); // Start the receiver
     } else if (dir == "stop") {
       disableMotors();
     }
@@ -98,7 +96,7 @@ void loop() {  /*----( LOOP: RUNS CONSTANTLY )----*/
 
 /*-----( Declare User-written Functions )-----*/
 String translateIR() { // takes action based on IR code received
-  // describing Car MP3 IR codes for SAMSUNG TV controller
+  // describing  IR codes for SAMSUNG TV controller
   switch (results.value) {
     case 0xE0E006F9:
     case 0xC26BF044:
@@ -145,6 +143,14 @@ String translateIR() { // takes action based on IR code received
 void autopilot(){
   enableMotors();
   while(true){
+
+    if (irrecv.decode(&results)) {
+      if (results.value == 2249845039 || results.value == 3772801693 ){
+        Serial.println("AUTO-PILOT OFF");
+        break;
+      }
+      irrecv.resume();
+    }
     
     servoFront();
     long distance = getDistance();
