@@ -1,11 +1,4 @@
-/* 
-  IR Remote Kit Test
-  Uses YourDuino.com IR Infrared Remote Control Kit 2
-  http://arduino-direct.com/sunshop/index.php?l=product_detail&p=153
-  based on code by Ken Shirriff - http://arcfn.com
-  Get Library at: https://github.com/shirriff/Arduino-IRremote
-  Unzip folder into Libraries. RENAME folder IRremote
-  terry@yourduino.com */
+/* Lydia, 4wd Arduino robot. Constantly imporivng its actions */
 
 /*-----( Import needed libraries )-----*/
 #include <NewPing.h>
@@ -13,33 +6,34 @@
 #include "IRremote.h"
 
 /*-----( Declare Constants )-----*/
-int receiver = 2; // pin 1 of IR receiver to Arduino digital pin 2
+const int receiver = 2; 
 
 //ledPin
-int ledPin = 13;
+const int ledPin = 13;
 
 //servoPin
-int servoPin = 12;
-Servo Servo1;
+const int servoPin = 12;
 
 //sensor
-int trigPin = 7; // harmaa
-int echoPin = 8; // valkonen
-NewPing sonar(trigPin, echoPin, 400);
+const int trigPin = 7; // harmaa
+const int echoPin = 8; // valkonen
 
+//motors: A is left, B is right
+const int enableA = 11;
+const int pinA1 = 5;
+const int pinA2 = 6;
+
+const int enableB = 10;
+const int pinB1 = 4;
+const int pinB2 = 3;
 /*-----( Declare objects )-----*/
+Servo Servo1;
+NewPing sonar(trigPin, echoPin, 400);
 IRrecv irrecv(receiver);           // create instance of 'irrecv'
 decode_results results;            // create instance of 'decode_results'
 /*-----( Declare Variables )-----*/
 
-//motors: A is left, B is right
-int enableA = 11;
-int pinA1 = 5;
-int pinA2 = 6;
 
-int enableB = 10;
-int pinB1 = 4;
-int pinB2 = 3;
 
 
 void setup()   /*----( SETUP: RUNS ONCE )----*/
@@ -94,7 +88,7 @@ void loop() {  /*----( LOOP: RUNS CONSTANTLY )----*/
   }
 }/* --(end main loop )-- */
 
-/*-----( Declare User-written Functions )-----*/
+
 String translateIR() { // takes action based on IR code received
   // describing  IR codes for SAMSUNG TV controller
   switch (results.value) {
@@ -138,7 +132,7 @@ String translateIR() { // takes action based on IR code received
   delay(500);
 
 
-} //END translateIR
+}
 
 void autopilot(){
   enableMotors();
@@ -147,6 +141,7 @@ void autopilot(){
     if (irrecv.decode(&results)) {
       if (results.value == 2249845039 || results.value == 3772801693 ){
         Serial.println("AUTO-PILOT OFF");
+        coast(100);
         break;
       }
       irrecv.resume();
@@ -198,6 +193,7 @@ void autopilot(){
     }
     
    }
+   enableMotors();
 }
 
 //servo controls
@@ -344,3 +340,12 @@ void motorBBrake() {
   digitalWrite(pinB1, HIGH);
   digitalWrite(pinB2, HIGH);
 }
+
+/* 
+  IR Remote Kit Test
+  Uses YourDuino.com IR Infrared Remote Control Kit 2
+  http://arduino-direct.com/sunshop/index.php?l=product_detail&p=153
+  based on code by Ken Shirriff - http://arcfn.com
+  Get Library at: https://github.com/shirriff/Arduino-IRremote
+  Unzip folder into Libraries. RENAME folder IRremote
+  terry@yourduino.com */
